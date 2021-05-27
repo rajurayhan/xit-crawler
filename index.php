@@ -37,7 +37,8 @@
             $productData = [];
 
             if(isset($productsUrl)){
-                foreach ($productsUrl as $key => $productsUrl) {
+                $productsUrl = array_unique($productsUrl);
+                foreach ($productsUrl as $key => $productUrl) {
                     $product = [];
                     $productResponse = Crawler::getPage($productUrl);
                     if($productResponse->getStatus() === 200) {
@@ -88,7 +89,7 @@
                         
                     }
 
-                    echo $product['title'].'</br>';
+                    // echo $product['title'].'</br>';
 
                     array_push($productData, $product);
                 }
