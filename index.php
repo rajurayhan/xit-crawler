@@ -85,6 +85,10 @@
                         $product['model']   = $skus[0]->nodeValue;
                         $product['sku']     = $skus[1]->nodeValue;
                     }
+
+                    echo '<pre>';
+                    print_r($product);
+                    echo '</pre>';
                     
                 }
                 
