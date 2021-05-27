@@ -31,71 +31,70 @@
                     $productsUrl[] = $productUrl;
                 }
             }
-
-            // print_r($carsUrl);
+            
 
             $productResponse = [];
             $productData = [];
 
             if(isset($productsUrl)){
-                $product = [];
-                $productResponse = Crawler::getPage($productsUrl[7]);
-                if($productResponse->getStatus() === 200) {
-                    $productHtml =  $productResponse->getContent();
-                    $productHtml = mb_convert_encoding($productHtml, 'HTML-ENTITIES', "UTF-8");                    
+                foreach ($productsUrl as $key => $productsUrl) {
+                    $product = [];
+                    $productResponse = Crawler::getPage($productUrl);
+                    if($productResponse->getStatus() === 200) {
+                        $productHtml =  $productResponse->getContent();
+                        $productHtml = mb_convert_encoding($productHtml, 'HTML-ENTITIES', "UTF-8");                    
 
-                    $productDom = new DOMDocument;
-                    @$productDom->loadHTML($productHtml);
-                    $xpath = new DOMXPath($productDom);
+                        $productDom = new DOMDocument;
+                        @$productDom->loadHTML($productHtml);
+                        $xpath = new DOMXPath($productDom);
 
-                    // Product Image
-                    $figures = $xpath->query("//figure[@class='slick-slide']//a[1]/@href");
-                    if(isset($figures)){
-                        $product['image'] = $figures[0]->nodeValue;
-                    }
-
-                    // Product Name 
-                    $name = $xpath->query("//h1[@itemprop='name']");
-                    if(isset($name)){
-                        $product['title'] = $name[0]->nodeValue;
-                    }
-
-                    // Product description 
-                    $descriptions = $xpath->query("//div[@class='descriptions']//p");
-                    if(isset($descriptions)){
-                        $descriptionText = '<div>';
-                        foreach ($descriptions as $key => $description) {
-                            $descriptionText .= '<p>'.$description->nodeValue.'</p>';
+                        // Product Image
+                        $figures = $xpath->query("//figure[@class='slick-slide']//a[1]/@href");
+                        if(isset($figures)){
+                            $product['image'] = $figures[0]->nodeValue;
                         }
-                        $descriptionText .= '</div>';
 
-                        $product['description'] = $descriptionText;
+                        // Product Name 
+                        $name = $xpath->query("//h1[@itemprop='name']");
+                        if(isset($name)){
+                            $product['title'] = $name[0]->nodeValue;
+                        }
+
+                        // Product description 
+                        $descriptions = $xpath->query("//div[@class='descriptions']//p");
+                        if(isset($descriptions)){
+                            $descriptionText = '<div>';
+                            foreach ($descriptions as $key => $description) {
+                                $descriptionText .= '<p>'.$description->nodeValue.'</p>';
+                            }
+                            $descriptionText .= '</div>';
+
+                            $product['description'] = $descriptionText;
+                        }
+
+                        // Product Price
+                        $prices = $xpath->query("//span[@class='price']");
+                        if(isset($prices)){
+                            $product['price'] = $prices[0]->nodeValue;
+                        }
+                        
+
+                        // Product SKU and MModel 
+                        $skus = $xpath->query("//dd");
+                        if(isset($skus)){
+                            $product['model']   = $skus[0]->nodeValue;
+                            $product['sku']     = $skus[1]->nodeValue;
+                        }
+                        
                     }
 
-                    // Product Price
-                    $prices = $xpath->query("//span[@class='price']");
-                    if(isset($prices)){
-                        $product['price'] = $prices[0]->nodeValue;
-                    }
-                    
+                    echo $product['title'].'</br>';
 
-                    // Product SKU and MModel 
-                    $skus = $xpath->query("//dd");
-                    if(isset($skus)){
-                        $product['model']   = $skus[0]->nodeValue;
-                        $product['sku']     = $skus[1]->nodeValue;
-                    }
-
-                    echo '<pre>';
-                    print_r($product);
-                    echo '</pre>';
-                    
+                    array_push($productData, $product);
                 }
-                
-                // foreach($productsUrl as $index => $productUrl){
-                    
-                // }
             }
+
+            print_r($productData);
 
         }
     } catch (\Throwable $th) {
