@@ -1,10 +1,7 @@
 <?php 
     require './vendor/autoload.php';
     require './library/Crawler.php';
-    // echo phpinfo();
     use JonnyW\PhantomJs\Client;
-    // use DOMDocument;
-    // use DOMXPath;
 
     try {
 
@@ -89,8 +86,6 @@
                         }
                         
                     }
-
-                    // echo $product['title'].'</br>';
 
                     array_push($productData, $product);
                 }
