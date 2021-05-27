@@ -12,4 +12,16 @@ class Crawler{
 
         return $response;
     }
+
+    public static function generateCSV($array){
+        // Open a file in write mode ('w')
+        $fp = fopen('products.csv', 'w');
+        
+        // Loop through file pointer and a line
+        foreach ($array as $fields) {
+            fputcsv($fp, $fields);
+        }
+        
+        fclose($fp);
+    }
 }

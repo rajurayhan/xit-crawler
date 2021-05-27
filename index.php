@@ -42,6 +42,7 @@
                     $product = [];
                     $productResponse = Crawler::getPage($productUrl);
                     if($productResponse->getStatus() === 200) {
+                        $product['url'] = $productUrl;
                         $productHtml =  $productResponse->getContent();
                         $productHtml = mb_convert_encoding($productHtml, 'HTML-ENTITIES', "UTF-8");                    
 
@@ -52,7 +53,7 @@
                         // Product Image
                         $figures = $xpath->query("//figure[@class='slick-slide']//a[1]/@href");
                         if(isset($figures)){
-                            $product['image'] = $figures[0]->nodeValue;
+                            $product['image'] = $figures[0] ? $figures[0]->nodeValue : '';
                         }
 
                         // Product Name 
@@ -76,7 +77,7 @@
                         // Product Price
                         $prices = $xpath->query("//span[@class='price']");
                         if(isset($prices)){
-                            $product['price'] = $prices[0]->nodeValue;
+                            $product['price'] = $prices[0] ? $prices[0]->nodeValue : 0;
                         }
                         
 
@@ -95,8 +96,11 @@
                 }
             }
 
+            echo '<pre>';
             print_r($productData);
+            echo '</pre>';
 
+            Crawler::generateCSV($productData);
         }
     } catch (\Throwable $th) {
         //throw $th;
